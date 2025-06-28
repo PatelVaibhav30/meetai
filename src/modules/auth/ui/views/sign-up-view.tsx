@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { useState } from "react";
@@ -144,13 +145,31 @@ export const SignUpView = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Button disabled={pending} type="button" variant="outline" className="w-full">
-                                        {/* <img src="/google.svg" alt="Google Logo" className="h-4 w-4 mr-2" /> */}
+                                    <Button
+                                        onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "google",
+                                            })
+                                        }}
+                                        disabled={pending}
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full">
+                                        <FaGoogle className="h-4 w-4 mr-2" />
                                         Google
                                     </Button>
 
-                                    <Button disabled={pending} type="button" variant="outline" className="w-full">
-                                        {/* <img src="/github.svg" alt="GitHub Logo" className="h-4 w-4 mr-2" /> */}
+                                    <Button
+                                        onClick={() => {
+                                            authClient.signIn.social({
+                                                provider: "github",
+                                            })
+                                        }}
+                                        disabled={pending}
+                                        type="button"
+                                        variant="outline"
+                                        className="w-full">
+                                        <FaGithub className="h-4 w-4 mr-2" />
                                         GitHub
                                     </Button>
                                 </div>

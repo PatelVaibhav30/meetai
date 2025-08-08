@@ -52,18 +52,31 @@ export const agentsRouter = createTRPCRouter({
             };
         }),
 
-    //TODO: Change `genOne` to use protectedProcedures
-    getOne: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ input }) => {
-        const [existingAgent] = await db
-            .select({
-                meetingCount: sql<number>`5`,
-                ...getTableColumns(agents),
-            })
-            .from(agents)
-            .where(eq(agents.id, input.id))
+    getOne: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ input, ctx }) => {
+            const [existingAgent] = await db
+                .select({
+                    meetingCount: sql<number>`5`,
+                    ...getTableColumns(agents),
+                })
+                .from(agents)
+                .where(
+                    and(
+                        eq(agents.id, input.id),
+                        eq(agents.userId, ctx.auth.user.id)
+                    )
+                );
 
-        return existingAgent;
-    }),
+            if (!existingAgent) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "Agent not found"
+                });
+            }
+
+            return existingAgent;
+        }),
 
     create: protectedProcedure
         .input(agentsInsertSchema)
